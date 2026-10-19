@@ -1,0 +1,4 @@
+source,url,downloaded_on
+ACS county estimates,"https://api.census.gov/data/2024/acs/acs5?get=NAME,B19013_001E,B19013_001M&for=county:*&in=state:48",2026-10-19
+ACS state estimate,"https://api.census.gov/data/2024/acs/acs5?get=NAME,B19013_001E,B19013_001M&for=state:48",2026-10-19
+County boundaries,https://www2.census.gov/geo/tiger/GENZ2024/shp/cb_2024_us_county_500k.zip,2026-10-19
