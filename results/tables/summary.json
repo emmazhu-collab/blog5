@@ -1,0 +1,10 @@
+{
+  "counties": 254,
+  "valid_estimates": 254,
+  "missing_moe": 0,
+  "state_income": 78476.0,
+  "state_moe": 263.0,
+  "above_state": 41,
+  "below_state": 213,
+  "at_least_100000": 10
+}
