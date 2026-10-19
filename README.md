@@ -38,31 +38,104 @@ The download script uses public Census files, so no API key is needed. Both orig
 
 ## Replication instructions
 
-1. Open `blog5.Rproj` in RStudio, then open the **Terminal** tab. Run the commands below from the project folder. The analysis was tested with Python 3.13. Create a separate Python environment and install the saved package versions:
+### Get the project
 
-   ```sh
-   python3 -m venv .venv
-   source .venv/bin/activate
-   python -m pip install -r requirements.txt
-   ```
+On the [Blog 5 GitHub page](https://github.com/emmazhu-collab/blog5), choose **Code > Download ZIP**, then unzip the folder. Keep `code`, `data`, `requirements.txt`, and `blog5.Rproj` together. Download the full project rather than copying only the Python code. Open `blog5.Rproj` in RStudio.
 
-   These setup commands are for macOS or Linux. You only need to install packages once. Activate the environment again when starting a new Terminal session.
+The steps below are for macOS or Linux. A downloaded project does not include `.venv`; new users should complete **First-time setup** in Terminal before choosing a run method. If you already have the project and its working environment, skip setup.
 
-2. The inputs are already in `data/source/`: `acsdt5y2024-b19013.dat` and `cb_2024_us_county_500k.zip`. If either file is missing, download it:
+### Run directly in RStudio
 
-   ```sh
-   python code/download.py
-   ```
+Open `blog5.Rproj`. Before starting Python, select **Session > Restart R**. In the **R Console** (the prompt is `>`), copy only the two lines inside this box, paste them into the R Console, and press Enter. Do not copy the backticks:
 
-3. Run the analysis:
+```r
+library(reticulate)
+use_python(file.path(getwd(), ".venv", "bin", "python"), required = TRUE)
+```
 
-   ```sh
-   python code/analysis.py
-   ```
+These lines select this project's Python environment. If `.venv` does not exist, complete the first-time Terminal setup below first. If `reticulate` is missing, install it once with `install.packages("reticulate")` in the R Console.
 
-RStudio's Terminal can run these commands; they are Python commands, not R Console commands. The scripts resolve paths from their own location, so no machine-specific file path is needed.
+Open `code/analysis.py`, select all the code with **Command+A**, and click **Run**. Run from the top so that imports and data are created before the plotting steps. The script supports this interactive mode as well as Terminal execution.
 
-With saved inputs and packages installed, step 3 works offline. The downloader reuses existing files. The analysis always rebuilds the processed data, tables, and figures. No result is copied from Console output.
+A `>>>` prompt means you are now in Python. Do not enter R functions such as `py_run_string()` there. To return to R, type `exit`. If an error occurs, check the first error: later messages such as `fig is not defined` may only be consequences of it.
+
+The figures are saved in `results/figures/`. Open those PNG files to view them. Running the code does not automatically open a plot window.
+
+### Run in Terminal instead
+
+Open `blog5.Rproj` in RStudio. Select **Terminal**, next to Console. If it is not visible, use **Tools > Terminal > New Terminal**.
+
+Copy only the commands inside each code box, paste them into Terminal, and press Enter. Do not copy the backticks or paste these commands into the R Console. You can run the whole file in Terminal, or use the RStudio Run steps above.
+
+The commands below are for macOS or Linux. They should run from the `blog5` project folder. Type `pwd` to check the current folder and `ls` to check that it contains `code`, `data`, and `requirements.txt`. If needed, type `cd `, drag the project folder from Finder into Terminal, and press Enter.
+
+### First-time setup
+
+You need Python 3.13. If this project already has a working `.venv` with the required packages, skip this step. Otherwise, copy and run:
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+```
+
+Wait for installation to finish before running the analysis. An internet connection is needed to install packages. The main packages are pandas, GeoPandas, Matplotlib, and requests. `requirements.txt` lists the tested versions.
+
+### Run the analysis
+
+Copy this command into Terminal each time you want to recreate the results:
+
+```sh
+.venv/bin/python code/analysis.py
+```
+
+This uses the project's Python environment directly, so you do not need to activate it first. The two inputs are included in `data/source/`: `acsdt5y2024-b19013.dat` and `cb_2024_us_county_500k.zip`. With these inputs and the packages installed, the analysis works offline. No API key is needed.
+
+The command prints the summary and saves the tables in `results/tables/` and two PNG figures in `results/figures/`. It also recreates `data/processed/`. Open the PNG files to view the figures; they do not automatically appear in RStudio's Plots panel. Expected results include 254 counties and a Texas median income of $78,476.
+
+If either original input is missing, run this command with an internet connection, then run the analysis again:
+
+```sh
+.venv/bin/python code/download.py
+```
+
+The downloader keeps existing source files. The analysis rebuilds its outputs from the saved inputs; no results are manually copied from Console output.
+
+### Run in JupyterLab
+
+Complete the first-time setup above first. Then, in **Terminal**, from the Blog 5 project folder, copy and run:
+
+```sh
+.venv/bin/python -m pip install jupyterlab ipykernel
+.venv/bin/python -m ipykernel install --user --name blog5 --display-name "Python (Blog5)"
+.venv/bin/python -m jupyterlab
+```
+
+Install JupyterLab and register the kernel only once. On later visits, run only the last command from the project folder. If you already use Jupyter, you can open it as usual after registering the kernel and select **Python (Blog5)**.
+
+In JupyterLab, create a notebook in the main Blog 5 folder, beside `code`, `data`, and `requirements.txt`. Choose the **Python (Blog5)** kernel. Copy this line into a **code cell** and press **Shift+Enter**:
+
+```python
+%run code/analysis.py
+```
+
+This runs the saved script and recreates the same tables and figures. You do not need to copy the full script into the notebook. If you prefer to paste all of `code/analysis.py` into one code cell, that also works when the notebook is in the main project folder. Run the cell from the beginning.
+
+The script saves figures instead of displaying them automatically. To view one inside the notebook, run a new cell:
+
+```python
+from IPython.display import Image, display
+display(Image(filename="results/figures/texas-income-map.png"))
+display(Image(filename="results/figures/selected-county-incomes.png"))
+```
+
+If a package is missing, check that the selected kernel is **Python (Blog5)**. If a file cannot be found, run `%pwd` in a cell and check that the notebook is working from the main Blog 5 folder.
+
+### If a command does not work
+
+- `__file__ is not defined`: reopen the updated script from disk; it now supports interactive Run. Open the project before running it.
+- `ModuleNotFoundError`: install the requirements with `.venv/bin/python -m pip install -r requirements.txt`. This installs them in the same environment used by the analysis.
+- `No such file or directory`: check that Terminal is in the project folder. If `.venv/bin/python` is missing, complete first-time setup.
+- An R error such as `unexpected symbol`: switch from Console to Terminal before pasting the command.
 
 ## Processing and checks
 
@@ -86,7 +159,7 @@ Expected checks for these inputs: 254 matched counties; state median $78,476; 41
 
 ## Updating the website article
 
-After running the analysis, copy these files into the website project:
+After running the analysis, use Finder to copy the files below into the matching folders in the website project. Copy the files themselves, keep their names unchanged, and replace the old copies if prompted:
 
 | File in this project | Location in the website project |
 | --- | --- |

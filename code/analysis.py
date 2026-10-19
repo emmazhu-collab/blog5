@@ -9,7 +9,11 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 from matplotlib import patheffects
 
-ROOT = Path(__file__).resolve().parents[1]
+# Terminal runs use the script location; RStudio Run uses the project folder.
+ROOT = Path(__file__).resolve().parents[1] if '__file__' in globals() else Path.cwd()
+if ROOT.name == 'code':
+    ROOT = ROOT.parent
+
 RAW = ROOT / 'data' / 'source'
 PROCESSED = ROOT / 'data' / 'processed'
 TABLES = ROOT / 'results' / 'tables'
