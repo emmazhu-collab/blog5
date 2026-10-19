@@ -1,7 +1,6 @@
 """Read saved Census data, join county boundaries, and save tables and figures."""
 from pathlib import Path
 import json
-import sys
 import pandas as pd
 import geopandas as gpd
 import matplotlib
@@ -104,7 +103,6 @@ fig.text(0.08, 0.025, 'Selected examples, not all counties. Bars show Census 90%
 fig.tight_layout(rect=(0, 0.08, 1, 1))
 fig.savefig(FIGURES / 'selected-county-incomes.png', dpi=200)
 plt.close(fig)
-(ROOT / 'results' / 'environment.txt').write_text(f'Python {sys.version.split()[0]}\npandas {pd.__version__}\ngeopandas {gpd.__version__}\nmatplotlib {matplotlib.__version__}\n')
 print(json.dumps(summary, indent=2))
 print(texas[['NAME', 'income', 'moe']].sort_values('income', ascending=False).head(12).to_string(index=False))
 print(selected[['NAME', 'income', 'moe']].to_string(index=False))

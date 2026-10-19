@@ -21,8 +21,7 @@ blog5/
 │   └── processed/              Texas income CSV and joined GeoJSON
 └── results/
     ├── figures/                Map and selected-county comparison
-    ├── tables/                 County estimates, selected examples, summary
-    └── environment.txt          Versions used for the analysis
+    └── tables/                 County estimates, selected examples, summary
 ```
 
 The article is kept in `blog/posts/post5/` in my [website repository](https://github.com/emmazhu-collab/website). This project contains the analysis files. Running the Python code recreates the data tables and figures; it does not build the webpage.
@@ -83,7 +82,7 @@ The state reference is the Census estimate for Texas, not an average of county m
 - `results/figures/texas-income-map.png`: central county income map.
 - `results/figures/selected-county-incomes.png`: estimates and 90% margins of error.
 
-Expected checks for these inputs: 254 matched counties; state median $78,476; 41 county estimates above and 213 below it. The figure and table files are saved programmatically. `results/environment.txt` records Python and core package versions.
+Expected checks for these inputs: 254 matched counties; state median $78,476; 41 county estimates above and 213 below it. The figure and table files are saved programmatically.
 
 ## Updating the website article
 
